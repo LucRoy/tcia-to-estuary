@@ -14,13 +14,12 @@ def _dataCleanup(collection):
 
 def dataPrep(folderName, manifestList):
     os.rename("tciaDownload", folderName)
-    for x, item in enumerate(manifestList):
+    for item in enumerate(manifestList):
         split = item.split(",")
         path = collectionName + "/" + split[1] + "/"
-        if x > 0:
-            for file in os.listdir(path):
-                newName = _rename(split) + "_" + file
-                os.rename(os.path.join(path, file), os.path.join(path, newName))
+        for file in os.listdir(path):
+            newName = _rename(split) + "_" + file
+            os.rename(os.path.join(path, file), os.path.join(path, newName))
 
 def getCollectionWithManifestList(collection):
     series = tcia_utils.getSeries(collection)
