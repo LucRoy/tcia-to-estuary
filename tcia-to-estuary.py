@@ -1,4 +1,4 @@
-import TCIA_Notebooks.tcia_utils as tcia_utils
+import tcia_utils
 import os
 import shutil
 
@@ -14,9 +14,10 @@ def _dataCleanup(collection):
 
 def dataPrep(folderName, manifestList):
     os.rename("tciaDownload", folderName)
-    for item in enumerate(manifestList):
+    for item in manifestList[1:]:
         split = item.split(",")
         path = collectionName + "/" + split[1] + "/"
+
         for file in os.listdir(path):
             newName = _rename(split) + "_" + file
             os.rename(os.path.join(path, file), os.path.join(path, newName))
