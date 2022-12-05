@@ -29,6 +29,14 @@ def getCollectionWithManifestList(collection):
 
 collectionName = "Soft-tissue-Sarcoma"
 list = getCollectionWithManifestList(collectionName)
+
+print("### Preparing Collection Data")
 dataPrep(collectionName, list)
+
+print("### Adding Content to Estuary")
 responses = content_add(collectionName, create_collection=True)
+
+print("### Clean up")
 _dataCleanup(collectionName)
+
+print("### END")
