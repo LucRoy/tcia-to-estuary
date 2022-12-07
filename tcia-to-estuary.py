@@ -48,9 +48,9 @@ def dataprep(collection):
                 os.rename(os.path.join(path, file), os.path.join(path, name))
 
 
-def get_collection_with_manifest_list(collection):
-    series = tcia_utils.getSeries(collection)
-    tcia_utils.downloadSampleSeries(series, api_url="", input_type="", csv_filename=collection)
+def download_collection(col):
+    series = tcia_utils.getSeries(col)
+    tcia_utils.downloadSampleSeries(series, api_url="", input_type="", csv_filename=col)
 
 
 def get_collection():
@@ -63,24 +63,26 @@ def upload_all_collections():
         upload_collection(collection)
 
 
-def upload_collection(collection):
-    print("### Fetching Collection " + collection)
-    get_collection_with_manifest_list(collection)
+def upload_collection(col):
+    print("### Fetching Collection " + col)
+    download_collection(col)
 
     print("### Preparing Collection Data")
-    dataprep(collection)
+    dataprep(col)
 
     print("### Adding Content to Estuary")
-    # content_add(collection, create_collection=True)
+    content_add(col, create_collection=True)
 
     print("### Clean up")
-    cleanup(collection)
+    cleanup(col)
 
 
 def main(options):
     if options.collection is not None:
+        print("### Uploading collection " + options.collection)
         upload_collection(options.collection)
     else:
+        print("### Uploading all collection")
         upload_all_collections()
     print("### END")
 
