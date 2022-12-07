@@ -50,7 +50,7 @@ def dataprep(collection):
 
 def download_collection(col):
     series = tcia_utils.getSeries(col)
-    tcia_utils.downloadSeries(series, api_url="", input_type="", csv_filename=col)
+    tcia_utils.downloadSampleSeries(series, api_url="", input_type="", csv_filename=col)
 
 
 def get_collection():
