@@ -65,16 +65,13 @@ def upload_all_collections():
 
 def upload_collection(col):
     print("### Fetching Collection " + col)
-    download_collection(col)
+    series = tcia_utils.getSeries(col)
 
-    print("### Preparing Collection Data")
-    dataprep(col)
-
-    print("### Adding Content to Estuary")
-    content_add(col, create_collection=True)
-
-    print("### Clean up")
-    cleanup(col)
+    for item in series:
+        tcia_utils.downloadSeries([item], api_url="", input_type="", csv_filename=col)
+        dataprep(col)
+        content_add(col, create_collection=True)
+        cleanup(col)
 
 
 def main(options):
