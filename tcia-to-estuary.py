@@ -4,6 +4,14 @@ import os
 import shutil
 
 from pestuary.content import content_add
+from pestuary.collections import collection_create
+from estuary_client import MainCreateCollectionBody
+
+from pestuary import Pestuary
+
+pestuary = Pestuary()
+collectionsApi = pestuary.get_collections_api()
+contentApi = pestuary.get_content_api()
 
 
 def rename(arr):
@@ -63,14 +71,57 @@ def upload_all_collections():
         upload_collection(collection)
 
 
+def collection_create(name, description=''):
+    body = MainCreateCollectionBody(name=name, description=description)
+    return collectionsApi.collections_post(body)
+
+
+def _add_file(path, collection_uuid='', root_collection_path=''):
+    # get only relevant parts of path for directory inside collection and filename
+    # /tmp/mydir/subdir/current-file -> [collection_path: /subdir/, filename: current-file]
+    collection_path = ''
+    if collection_uuid:
+        if not root_collection_path:
+            print(f"empty root collection path")
+            return
+        collection_path = '/' + os.path.relpath(path, start=root_collection_path)
+    print("Calling api", path, collection_uuid)
+    return contentApi.content_add_post(path, coluuid=collection_uuid, dir=collection_path)
+
+
+def _add_dir(path, collection_uuid='', root_collection_path=''):
+    responses = []
+    if len(os.listdir(path)) == 0:
+        print(f"empty directory '{path}'")
+        return responses
+
+    for entry in os.listdir(path):
+        fullpath = os.path.join(path, entry)
+        if os.path.isfile(fullpath):
+            responses.append(_add_file(fullpath, collection_uuid, root_collection_path))
+        else:
+            responses += _add_dir(fullpath, collection_uuid, root_collection_path)
+
+    return responses
+
+
 def upload_collection(col):
     print("### Fetching Collection " + col)
     series = tcia_utils.getSeries(col)
 
+    collection_uuid = ''
+    collection = {}
+    # collection_name is last part of dir path
+    # /tmp/foo/bar/cool-pictures/ -> collection_name: cool-pictures
+    collection_name = os.path.basename(os.path.normpath(col))
+    collection = collection_create(collection_name)
+    collection_uuid = collection.uuid
+
+    print("collection_uuid", collection_uuid)
     for item in series:
         tcia_utils.downloadSeries([item], api_url="", input_type="", csv_filename=col)
         dataprep(col)
-        content_add(col, create_collection=True)
+        _add_dir(col, collection_uuid=collection_uuid, root_collection_path=col)
         cleanup(col)
 
 
