@@ -3,7 +3,6 @@ import tcia_utils
 import os
 import shutil
 
-from pestuary.content import content_add
 from pestuary.collections import collection_create
 from estuary_client import MainCreateCollectionBody
 
@@ -109,10 +108,6 @@ def upload_collection(col):
     print("### Fetching Collection " + col)
     series = tcia_utils.getSeries(col)
 
-    collection_uuid = ''
-    collection = {}
-    # collection_name is last part of dir path
-    # /tmp/foo/bar/cool-pictures/ -> collection_name: cool-pictures
     collection_name = os.path.basename(os.path.normpath(col))
     collection = collection_create(collection_name)
     collection_uuid = collection.uuid
