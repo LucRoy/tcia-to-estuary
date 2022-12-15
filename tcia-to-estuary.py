@@ -2,6 +2,7 @@ import argparse
 import tcia_utils
 import os
 import shutil
+import time
 
 from pestuary.collections import collection_create
 from estuary_client import MainCreateCollectionBody
@@ -104,6 +105,17 @@ def _add_dir(path, collection_uuid='', root_collection_path=''):
     return responses
 
 
+def content_add(col, collection_uuid):
+    for i in range(0, 20):
+        while True:
+            try:
+                _add_dir(col, collection_uuid=collection_uuid, root_collection_path=col)
+            except Exception as e:
+                time.sleep(5)
+                continue
+            break
+
+
 def upload_collection(col):
     print("### Fetching Collection " + col)
     series = tcia_utils.getSeries(col)
@@ -116,7 +128,7 @@ def upload_collection(col):
     for item in series:
         tcia_utils.downloadSeries([item], api_url="", input_type="", csv_filename=col)
         dataprep(col)
-        _add_dir(col, collection_uuid=collection_uuid, root_collection_path=col)
+        content_add(col, collection_uuid)
         cleanup(col)
 
 
