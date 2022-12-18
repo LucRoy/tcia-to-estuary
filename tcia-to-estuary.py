@@ -106,14 +106,17 @@ def _add_dir(path, collection_uuid='', root_collection_path=''):
 
 
 def content_add(col, collection_uuid):
-    for i in range(0, 20):
-        while True:
-            try:
-                _add_dir(col, collection_uuid=collection_uuid, root_collection_path=col)
-            except Exception as e:
+    tries = 20
+    for i in range(tries):
+        try:
+            _add_dir(col, collection_uuid=collection_uuid, root_collection_path=col)
+        except Exception as e:
+            if i < tries - 1: # i is zero indexed
                 time.sleep(5)
                 continue
-            break
+            else:
+                raise
+        break
 
 
 def upload_collection(col):
