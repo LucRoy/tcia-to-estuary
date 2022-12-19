@@ -113,11 +113,14 @@ def content_add(col, collection_uuid):
         try:
             _add_dir(col, collection_uuid=collection_uuid, root_collection_path=col)
         except Exception as e:
-            if "duplicatekey value violates unique constraint" in str(e):
+            print(e)
+            if "duplicate key" in str(e):
                 # data already saved... skip
                 print("skipping")
+                break
             else:
                 if i < tries - 1: # i is zero indexed
+                    print("retrying in 10s")
                     time.sleep(10)
                     continue
                 else:
@@ -128,7 +131,6 @@ def content_add(col, collection_uuid):
 def upload_collection(col):
     print("### Fetching Collection " + col)
     series = tcia_utils.getSeries(col)
-
     collection_name = os.path.basename(os.path.normpath(col))
     collection = collection_create(collection_name)
     collection_uuid = collection.uuid
