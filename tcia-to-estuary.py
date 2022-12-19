@@ -113,8 +113,11 @@ def content_add(col, collection_uuid):
         try:
             _add_dir(col, collection_uuid=collection_uuid, root_collection_path=col)
         except Exception as e:
+            if "duplicatekey value violates unique constraint" in str(e):
+                # data already saved... skip
+                print("skipping")
+                break
             if i < tries - 1: # i is zero indexed
-                print(e)
                 time.sleep(10)
                 continue
             else:
