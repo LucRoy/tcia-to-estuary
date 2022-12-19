@@ -116,12 +116,12 @@ def content_add(col, collection_uuid):
             if "duplicatekey value violates unique constraint" in str(e):
                 # data already saved... skip
                 print("skipping")
-                break
-            if i < tries - 1: # i is zero indexed
-                time.sleep(10)
-                continue
             else:
-                raise
+                if i < tries - 1: # i is zero indexed
+                    time.sleep(10)
+                    continue
+                else:
+                    raise
         break
 
 
