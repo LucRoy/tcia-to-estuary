@@ -1,4 +1,6 @@
 import argparse
+from pprint import pprint
+
 import tcia_utils
 import os
 import shutil
@@ -44,7 +46,7 @@ def cleanup(col):
 
 
 def dataprep(collection):
-    os.rename("tciaDownload", collection)
+    # os.rename("tciaDownload", collection)
     with open(collection + ".csv") as f:
         next(f)
         for line in f:
@@ -106,13 +108,14 @@ def _add_dir(path, collection_uuid='', root_collection_path=''):
 
 
 def content_add(col, collection_uuid):
-    tries = 20
+    tries = 100
     for i in range(tries):
         try:
             _add_dir(col, collection_uuid=collection_uuid, root_collection_path=col)
         except Exception as e:
             if i < tries - 1: # i is zero indexed
-                time.sleep(5)
+                print(e)
+                time.sleep(10)
                 continue
             else:
                 raise

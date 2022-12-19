@@ -607,7 +607,7 @@ def downloadSampleSeries(series_data, api_url = "", input_type = "", csv_filenam
                 metadata = requests.get(metadata_url).json()
             file = zipfile.ZipFile(io.BytesIO(data.content))
             # print(file.namelist())
-            file.extractall(path = "tciaDownload/" + "/" + seriesUID)
+            file.extractall(path = csv_filename + "/" + seriesUID)
             # write the series metadata to a dataframe            
             manifestDF = pd.concat([manifestDF, pd.DataFrame(metadata)], ignore_index=True)
             # Repeat n times for demo purposes
@@ -674,7 +674,7 @@ def downloadSeries(series_data, api_url = "", input_type = "", csv_filename=""):
                 metadata = requests.get(metadata_url).json()
             file = zipfile.ZipFile(io.BytesIO(data.content))
             # print(file.namelist())
-            file.extractall(path = "tciaDownload/" + "/" + seriesUID)
+            file.extractall(path = csv_filename+ "/" + seriesUID)
             # write the series metadata to a dataframe            
             manifestDF = pd.concat([manifestDF, pd.DataFrame(metadata)], ignore_index=True)
         print("Download Complete:", len(series_data), "Series Instance UIDs (scans).")
